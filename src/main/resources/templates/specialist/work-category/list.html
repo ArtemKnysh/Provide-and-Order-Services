@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Specialists List')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-11">
+        <h3 class="text-center"
+            th:utext="${workCategory.icon != null ? workCategory.icon : workCategory.parent.icon}+' '+${workCategory.name}"></h3>
+        <hr>
+        <th:block sec:authorize="hasRole('ROLE_CUSTOMER')">
+            <div class="col mb-1">
+                <a class="form-control btn btn-primary"
+                   th:href="@{/service-order/customer/create/{select-work-category-id}(select-work-category-id=${workCategory.id})}">NEW
+                    SERVICE ORDER</a>
+            </div>
+            <hr>
+        </th:block>
+        <h5> Best Specialists in these Work Category: </h5>
+        <hr>
+        <div class="card-columns">
+            <div class="card" th:each="specialist: ${specialists}">
+                <a class="list-group-item list-group-item-action list-group-item-secondary"
+                   th:href="@{/specialist/public/profile/{id}(id=${specialist.id})}"
+                   th:text="${specialist.fullName}"></a>
+                <div class="card-body">
+                    <div class="row" th:if="${!#strings.isEmpty(specialist.phoneNumber)}">
+                        <div class="col-auto">
+                            <h5>Phone number:</h5>
+                        </div>
+                        <div class="col">
+                            <p class="card-text text-right" th:text="${specialist.phoneNumber}"></p>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${!#strings.isEmpty(specialist.email)}">
+                        <div class="col-auto">
+                            <h5>Email:</h5>
+                        </div>
+                        <div class="col">
+                            <p class="card-text text-right" th:text="${specialist.email}"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto justify-content-center align-self-center">
+                            <h5>Rating:</h5>
+                        </div>
+                        <div class="col d-flex">
+                            <fieldset class="rating ml-auto">
+                                <input disabled th:checked="${specialist.averageRating == 5}"
+                                       type="radio" value="5"/>
+                                <label class="full" title="Excellent - 5 stars"></label>
+                                <input disabled th:checked="${specialist.averageRating == 4}"
+                                       type="radio" value="4"/>
+                                <label class="full" title="Great - 4 stars"></label>
+                                <input disabled th:checked="${specialist.averageRating == 3}"
+                                       type="radio" value="3"/>
+                                <label class="full" title="OK - 3 stars"></label>
+                                <input disabled th:checked="${specialist.averageRating == 2}"
+                                       type="radio" value="2"/>
+                                <label class="full" title="Bad - 2 stars"></label>
+                                <input disabled th:checked="${specialist.averageRating == 1}"
+                                       type="radio" value="1"/>
+                                <label class="full" title="Terrible - 1 star"></label>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Customer Service Orders')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-8">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col">
+                    <h1>Customer Service Orders</h1>
+                </div>
+                <div class="col-3 pt-2"
+                     th:if="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).CREATED}">
+                    <a class="form-control btn btn-primary"
+                       th:href="@{/service-order/customer/edit/{id}(id=${order.id})}">Edit</a>
+                </div>
+            </div>
+            <div id="globalAlert"></div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Title</h6>
+                </div>
+                <div class="col text-secondary form-group mb-0"
+                     th:text="${order.title}">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Description</h6>
+                </div>
+                <div class="col text-secondary form-group mb-0"
+                     th:text="${order.description}">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Cost</h6>
+                </div>
+                <div class="col text-secondary" th:text="${order.cost}"></div>
+                <div id="serviceOrderPaymentButton"
+                     th:classappend="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).WAIT_FOR_PAYMENT ? '' : 'd-none'}">
+                    <form class="col" id="serviceOrderPaymentForm" method="post"
+                          th:action="@{/service-order/customer/pay}">
+                        <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                        <button class="form-control btn btn-success" type="submit"
+                        >Pay
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3" id="paymentAlert"></div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Status</h6>
+                </div>
+                <div class="col text-secondary" id="serviceOrderStatus" th:text="${order.status}"></div>
+            </div>
+            <div class="form-row mt-3" id="serviceOrderStatusButtons"
+                 th:if="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).WAIT_FOR_CUSTOMER_APPROVE}">
+                <form class="col" id="approveSpecialistWorkForm" method="post"
+                      th:action="@{/service-order/customer/approve}">
+                    <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                    <button class="form-control btn btn-success" type="submit"
+                    >Approve
+                    </button>
+                </form>
+                <form action="/service-order/customer/extend" class="col" id="extendSpecialistWorkForm" method="post">
+                    <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                    <button class="form-control btn btn-warning" type="submit"
+                    >Extend
+                    </button>
+                </form>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Work Category</h6>
+                </div>
+                <div class="col text-secondary" th:text="${order.workCategory.name}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Specialist</h6>
+                </div>
+                <div th:if="${order.specialist == null}">
+                    <a class="col" th:href="@{/service-order/customer/find-specialist/{id}(id=${order.id})}"
+                    >Find Specialist
+                    </a>
+                </div>
+                <div th:if="${order.specialist != null}">
+                    <a class="col" th:href="@{/specialist/public/profile/{id}(id=${order.specialist.id})}"
+                       th:text="${order.specialist.fullName}"></a>
+                </div>
+            </div>
+            <div th:if="${specialistFeedback != null}">
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4 justify-content-center align-self-center">
+                        <h6 class="mb-0">Rating From Specialist</h6>
+                    </div>
+                    <div class="col-auto pl-2">
+                        <fieldset class="rating">
+                            <input disabled id="specialistStar5" required th:checked="${specialistFeedback.rating == 5}"
+                                   type="radio" value="5"/>
+                            <label class="full" for="specialistStar5" title="Excellent - 5 stars"></label>
+                            <input disabled id="specialistStar4" th:checked="${specialistFeedback.rating == 4}"
+                                   type="radio" value="4"/>
+                            <label class="full" for="specialistStar4" title="Great - 4 stars"></label>
+                            <input disabled id="specialistStar3" th:checked="${specialistFeedback.rating == 3}"
+                                   type="radio" value="3"/>
+                            <label class="full" for="specialistStar3" title="OK - 3 stars"></label>
+                            <input disabled id="specialistStar2" th:checked="${specialistFeedback.rating == 2}"
+                                   type="radio" value="2"/>
+                            <label class="full" for="specialistStar2" title="Bad - 2 stars"></label>
+                            <input disabled id="specialistStar1" th:checked="${specialistFeedback.rating == 1}"
+                                   type="radio" value="1"/>
+                            <label class="full" for="specialistStar1" title="Terrible - 1 star"></label>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h6 class="mb-0">Feedback</h6>
+                    </div>
+                    <div class="col text-secondary" th:text="${specialistFeedback.text}"></div>
+                </div>
+            </div>
+            <hr>
+            <div id="feedbackAlert"></div>
+            <form id="customerFeedbackForm" method="post" th:action="@{/feedback/customer/edit}"
+                  th:classappend="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).COMPLETED ? '' : 'd-none'}">
+                <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                <div class="row" id="ratingForm">
+                    <div class="col-sm-4">
+                        <h6 class="mb-0">Rate work with Specialist</h6>
+                    </div>
+                    <div class="col-auto pl-2">
+                        <fieldset class="rating">
+                            <input id="customerStar5" name="rating" required th:checked="${customerFeedback != null && customerFeedback.rating == 5}" type="radio"
+                                   value="5"/>
+                            <label class="full" for="customerStar5" title="Excellent - 5 stars"></label>
+                            <input id="customerStar4" name="rating" th:checked="${customerFeedback != null && customerFeedback.rating == 4}" type="radio"
+                                   value="4"/>
+                            <label class="full" for="customerStar4" title="Great - 4 stars"></label>
+                            <input id="customerStar3" name="rating" th:checked="${customerFeedback != null && customerFeedback.rating == 3}" type="radio"
+                                   value="3"/>
+                            <label class="full" for="customerStar3" title="OK - 3 stars"></label>
+                            <input id="customerStar2" name="rating" th:checked="${customerFeedback != null && customerFeedback.rating == 2}" type="radio"
+                                   value="2"/>
+                            <label class="full" for="customerStar2" title="Bad - 2 stars"></label>
+                            <input id="customerStar1" name="rating" th:checked="${customerFeedback != null && customerFeedback.rating == 1}" type="radio"
+                                   value="1"/>
+                            <label class="full" for="customerStar1" title="Terrible - 1 star"></label>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row mt-3" id="feedbackForm">
+                    <div class="col-sm-2">
+                        <h6 class="mb-0">Feedback</h6>
+                    </div>
+                    <div class="col-sm-10 text-secondary form-group mb-2">
+                        <textarea class="form-control mb-2" name="text" required rows="4"
+                                  th:text="${customerFeedback != null ? customerFeedback.text : ''}"
+                        ></textarea>
+                        <button class="form-control btn btn-success" type="submit">Save Feedback</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $('#approveSpecialistWorkForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/customer/approve',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                $('#serviceOrderStatus').text(response.body);
+                $('#serviceOrderStatusButtons').addClass("d-none");
+                $('#globalAlert').append(getAlert("success", response.message));
+                $('#serviceOrderPaymentButton').removeClass("d-none");
+            },
+            error: function () {
+                $('#globalAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+
+    function getAlert(type, successMessage) {
+        return "<div class='alert alert-" + type + " alert-dismissible fade show' role='alert'>" + successMessage +
+            "<button aria-label='Close' class='close' data-dismiss='alert' type='button'>" +
+            "<span aria-hidden='true'>&times;</span></button></div>";
+    }
+
+    $('#extendSpecialistWorkForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/customer/extend',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                $('#serviceOrderStatus').text(response.body);
+                $('#serviceOrderStatusButtons').addClass("d-none");
+                $('#globalAlert').append(getAlert("warning", response.message));
+            },
+            error: function () {
+                $('#globalAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+    $('#serviceOrderPaymentForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/customer/pay',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                if (!response.error) {
+                    $('#serviceOrderStatus').text(response.body);
+                    $('#serviceOrderPaymentButton').addClass("d-none");
+                    $('#globalAlert').append(getAlert("success", response.message));
+                    $('#customerFeedbackForm').removeClass("d-none");
+                } else {
+                    $('#paymentAlert').append(getAlert("warning", response.message));
+                }
+            },
+            error: function () {
+                $('#globalAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+    $('#customerFeedbackForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/feedback/customer/edit',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                $('#feedbackAlert').append(getAlert("success", response.message));
+            },
+            error: function () {
+                $('#feedbackAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+</script>
+</body>
+</html>

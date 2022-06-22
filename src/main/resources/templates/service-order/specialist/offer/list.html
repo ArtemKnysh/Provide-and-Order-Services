@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Service Orders Offers')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-11">
+        <h1 class="text-center">Service Orders Offers: </h1>
+        <hr>
+        <div>
+            <h5> Received: </h5>
+            <hr>
+            <div class="card-columns" id="receivedOffersCards">
+                <div class="card" th:each="offer: ${receivedOffers}">
+                    <h5 class="card-header" th:text="${offer.serviceOrderTitle}"></h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Customer:</h5>
+                            </div>
+                            <div class="col text-right">
+                                <a class="card-text " th:href="@{/customer/public/profile/{id}(id=${offer.customerId})}"
+                                   th:text="${offer.customerFullName}"></a>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerPhoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone number:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerPhoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerEmail)}">
+                            <div class="col-auto">
+                                <h5>Email:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerEmail}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Cost:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.serviceOrderCost}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Work Category:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.workCategoryName}"></p>
+                            </div>
+                        </div>
+                        <div class="form-row mt-1">
+                            <div class="col mb-1">
+                                <form class="receivedOffersAcceptForm" method="post"
+                                      th:action="@{/service-order/specialist/offer/accept}">
+                                    <input name="specialistId" th:value="${offer.specialistId}" type="hidden"/>
+                                    <input name="serviceOrderId" th:value="${offer.serviceOrderId}" type="hidden"/>
+                                    <button class="form-control btn btn-success" type="submit">Accept Offer
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col mb-1">
+                                <form class="receivedOffersDismissForm" method="post"
+                                      th:action="@{/service-order/specialist/offer/dismiss}">
+                                    <input name="specialistId" th:value="${offer.specialistId}" type="hidden"/>
+                                    <input name="serviceOrderId" th:value="${offer.serviceOrderId}" type="hidden"/>
+                                    <button class="form-control btn btn-danger" type="submit">Dismiss Offer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-1">
+        </div>
+        <div>
+            <h5> Accepted: </h5>
+            <hr>
+            <div class="card-columns" id="acceptedOffersCards">
+                <div class="card" th:each="offer: ${acceptedOffers}">
+                    <h5 class="card-header" th:text="${offer.serviceOrderTitle}"></h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Customer:</h5>
+                            </div>
+                            <div class="col text-right">
+                                <a class="card-text " th:href="@{/customer/public/profile/{id}(id=${offer.customerId})}"
+                                   th:text="${offer.customerFullName}"></a>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerPhoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone number:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerPhoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerEmail)}">
+                            <div class="col-auto">
+                                <h5>Email:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerEmail}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Cost:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.serviceOrderCost}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Work Category:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.workCategoryName}"></p>
+                            </div>
+                        </div>
+                        <div class="form-row mt-1">
+                            <div class="col mb-1">
+                                <form class="acceptedOffersDismissForm" method="post"
+                                      th:action="@{/service-order/specialist/offer/dismiss}">
+                                    <input name="specialistId" th:value="${offer.specialistId}" type="hidden"/>
+                                    <input name="serviceOrderId" th:value="${offer.serviceOrderId}" type="hidden"/>
+                                    <button class="form-control btn btn-danger" type="submit">Dismiss Offer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-1">
+        </div>
+        <div>
+            <h5> Dismissed: </h5>
+            <hr>
+            <div class="card-columns" id="dismissedOffersCards">
+                <div class="card" th:each="offer: ${dismissedOffers}">
+                    <h5 class="card-header" th:text="${offer.serviceOrderTitle}"></h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Customer:</h5>
+                            </div>
+                            <div class="col text-right">
+                                <a class="card-text " th:href="@{/customer/public/profile/{id}(id=${offer.customerId})}"
+                                   th:text="${offer.customerFullName}"></a>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerPhoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone number:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerPhoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(offer.customerEmail)}">
+                            <div class="col-auto">
+                                <h5>Email:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.customerEmail}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Cost:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.serviceOrderCost}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <h5>Work Category:</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${offer.workCategoryName}"></p>
+                            </div>
+                        </div>
+                        <div class="form-row mt-1">
+                            <div class="col mb-1">
+                                <form class="dismissedOffersAcceptForm" method="post"
+                                      th:action="@{/service-order/specialist/offer/accept}">
+                                    <input name="specialistId" th:value="${offer.specialistId}" type="hidden"/>
+                                    <input name="serviceOrderId" th:value="${offer.serviceOrderId}" type="hidden"/>
+                                    <button class="form-control btn btn-success" type="submit">Accept Offer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-1">
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on('submit', '.acceptedOffersDismissForm', acceptedOffersDismissFormSubmit)
+    $(document).on('submit', '.receivedOffersDismissForm', acceptedOffersDismissFormSubmit)
+    $(document).on('submit', '.dismissedOffersAcceptForm', dismissedOffersAcceptFormSubmit)
+    $(document).on('submit', '.receivedOffersAcceptForm', dismissedOffersAcceptFormSubmit)
+
+    function getCard(response, formAction, formClass, buttonMsg, buttonClass) {
+        let newCard = "<div class='card'>";
+        newCard = newCard + "<h5 class='card-header'>" + response.serviceOrderTitle + "</h5><div class='card-body'>";
+        newCard = newCard + "<div class='row'><div class='col-auto'><h5>";
+        newCard = newCard + "Customer:</h5></div><div class='col text-right'><a class='card-text'";
+        newCard = newCard + "href='/customer/public/profile/" + response.customerId + "'>";
+        newCard = newCard + response.customerFullName + "</a></div></div>";
+        if (response.customerPhoneNumber !== null && response.customerPhoneNumber.trim() !== "") {
+            newCard = newCard + "<div class='row'><div class='col-auto'>";
+            newCard = newCard + "<h5>Phone number:</h5></div><div class='col'>";
+            newCard = newCard + "<p class='card-text text-right'>" + response.customerPhoneNumber + "</p></div></div>";
+        }
+        if (response.customerEmail !== null && response.customerEmail.trim() !== "") {
+            newCard = newCard + "<div class='row'><div class='col-auto'>";
+            newCard = newCard + "<h5>Email:</h5></div><div class='col'>";
+            newCard = newCard + "<p class='card-text text-right'>" + response.customerEmail + "</p></div></div>";
+        }
+        newCard = newCard + "<div class='row'><div class='col-auto'><h5>";
+        newCard = newCard + "Cost:</h5></div><div class='col'><p class='card-text text-right'>";
+        newCard = newCard + response.serviceOrderCost + "</p></div></div>";
+        newCard = newCard + "<div class='row'><div class='col-auto'><h5>";
+        newCard = newCard + "Work Category:</h5></div><div class='col'><p class='card-text text-right'>";
+        newCard = newCard + response.workCategoryName + "</p></div></div>";
+        newCard = newCard + "<div class='form-row mt-1'><div class='col mb-1'>";
+        newCard = newCard + "<form action='" + formAction + "' method='post' class='" + formClass + "' >";
+        newCard = newCard + "<input type='hidden' name='specialistId' value='" + response.specialistId + "'/>";
+        newCard = newCard + "<input type='hidden' name='serviceOrderId' value='" + response.serviceOrderId + "'/>";
+        newCard = newCard + "<button type='submit' class='form-control btn " + buttonClass + "'>" + buttonMsg;
+        newCard = newCard + "</button></form></div></div></div></div>";
+        return newCard;
+    }
+
+    function acceptedOffersDismissFormSubmit(e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/specialist/offer/dismiss',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let card = form.parentNode.parentNode.parentNode.parentNode;
+                $(card).remove();
+                let newCard = getCard(response, "/service-order/specialist/offer/accept", "dismissedOffersAcceptForm",
+                    "Accept Offer", "btn-success");
+                $('#dismissedOffersCards').append(newCard);
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    }
+
+    function dismissedOffersAcceptFormSubmit(e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/specialist/offer/accept',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let card = form.parentNode.parentNode.parentNode.parentNode;
+                $(card).remove();
+                let newCard = getCard(response, "/service-order/specialist/offer/dismiss", "acceptedOffersDismissForm",
+                    "Dismiss Offer", "btn-danger");
+                $('#acceptedOffersCards').append(newCard);
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

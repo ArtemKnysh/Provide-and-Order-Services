@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title=${'Error ' + status})"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container">
+    <div class="jumbotron alert-danger">
+        <h1>Oops... something went wrong.</h1>
+        <h2>
+            <span th:text="${'Error - ' + status}"></span>
+            <span th:if="${error}" th:text="${' : ' + error}"></span>
+        </h2>
+    </div>
+</div>
+</body>
+</html>

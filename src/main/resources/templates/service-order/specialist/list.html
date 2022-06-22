@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Specialist Service Orders')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-10">
+        <h3 class="text-center">Specialist Service Orders</h3>
+        <hr>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Service Order</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order: ${orders}">
+                <td class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <h4 th:text="${order.title}"></h4>
+                            <p th:text="${order.description}"></p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <a th:href="@{/customer/public/profile/{id}(id=${order.customer.id})}"
+                       th:text="${order.customer.fullName}"></a>
+                </td>
+                <td th:text="${order.status}"></td>
+                <td class="form-group">
+                    <div class="form-row">
+                        <div class="col mb-1">
+                            <a class="form-control btn btn-primary"
+                               th:href="@{/service-order/specialist/details/{id}(id=${order.id})}">Details...</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

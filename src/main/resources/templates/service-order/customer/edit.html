@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Edit Service Order')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-8">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1>Edit Service Order</h1>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"
+                 th:if="${action != null}">
+                <span th:if="${action == 'create-success'}">Service Order was successfully created!</span>
+                <span th:if="${action == 'edit-success'}">Changes were successfully saved!</span>
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" th:action="@{/service-order/customer/edit}" th:object="${order}">
+                <fieldset class="form-group">
+                    <label for="create-title">Title</label>
+                    <input class="form-control" id="create-title" name="title"
+                           required="required" th:value="${order.title}" type="text">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="create-description">Description</label>
+                    <textarea class="form-control mb-2" id="create-description" name="description" required rows="4"
+                              th:text="${order.description}"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="create-work-category">Work Category</label>
+                    <select class="form-control mb-2" id="create-work-category" name="workCategoryId">
+                        <!--/*/ <th:block th:each="parentCategory: ${workCategories}">  /*/-->
+                        <option th:selected="${parentCategory.id} == ${order.workCategoryId}"
+                                th:text="${parentCategory.name}"
+                                th:value="${parentCategory.id}"></option>
+                        <option th:each="subCategory: ${parentCategory.subWorkCategories}"
+                                th:selected="${subCategory.id} == ${order.workCategoryId}"
+                                th:text="${'  ' + subCategory.name}"
+                                th:value="${subCategory.id}"></option>
+                        <!--/*/ </th:block> /*/-->
+                    </select>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="create-cost">Cost</label>
+                    <input class="form-control mb-2" id="create-cost" min="0" name="cost" step="100"
+                           th:value="${order.cost}"
+                           type="number" value="0"/>
+                </fieldset>
+                <input id="serviceOrderId" name="id" th:value="${order.id}" type="hidden"/>
+                <input name="specialistId" th:value="${order.specialistId}" type="hidden"/>
+                <input name="customerId" th:value="${order.customerId}" type="hidden"/>
+                <input name="status" th:value="${order.status}" type="hidden"/>
+                <button class="btn btn-success" type="submit">Save Changes</button>
+                <a class="col" th:href="@{/service-order/customer/details/{id}(id=${order.id})}"
+                >Back to details page</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

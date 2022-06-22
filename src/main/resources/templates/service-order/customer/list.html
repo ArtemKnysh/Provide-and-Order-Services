@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Customer Service Orders')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-10">
+        <h3 class="text-center">Customer Service Orders</h3>
+        <hr>
+        <div class="col mb-1">
+            <a class="form-control btn btn-primary"
+               th:href="@{/service-order/customer/create}">Create New Service Order</a>
+        </div>
+        <hr>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Service Order</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order: ${orders}">
+                <td class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <h4 th:text="${order.title}"></h4>
+                            <p th:text="${order.description}"></p>
+                            <a th:href="@{/specialist/public/profile/{id}(id=${order.specialist.id})}" th:if="${order.specialist != null}"
+                               th:text="${order.specialist.fullName}"></a>
+                        </div>
+                    </div>
+                </td>
+                <td th:text="${order.status}"></td>
+                <td class="form-group">
+                    <div class="form-row">
+                        <div class="col mb-1">
+                            <a class="form-control btn btn-primary"
+                               th:href="@{/service-order/customer/details/{id}(id=${order.id})}">Details...</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

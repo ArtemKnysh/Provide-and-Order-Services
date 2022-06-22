@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Customer Profile')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-7">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col">
+                    <h1>Customer Profile</h1>
+                </div>
+                <div class="col-3 pt-2">
+                    <a class="form-control btn btn-primary" th:href="@{/customer/edit/{id}(id=${customer.id})}"
+                    >Edit</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${customer.fullName}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Email</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${customer.email}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Phone Number</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${customer.phoneNumber}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Balance</h6>
+                </div>
+                <div class="col-sm-8 text-secondary"
+                     id="balance" th:text="${new java.text.DecimalFormat('#,##0.00').format(balance)}"></div>
+            </div>
+            <hr>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab"
+                       href="#account">Account Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       data-toggle="tab"
+                       href="#feedback">Feedback</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade border container active show"
+                     id="account">
+                    <form class="form-row mt-3" id="topUpForm" method="post"
+                          th:action="@{/account-transaction/user/top-up}">
+                        <input id="userId" name="userId" th:value="${customer.id}" type="hidden"/>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="amount" min="1" name="amount" step="any" type="number"
+                                   value="1"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="form-control btn btn-success" type="submit">Top Up</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <table class="table table-bordered table-striped" id="transactions-table">
+                        <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>
+                                <Date
+                                /th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction: ${transactionList}">
+                            <td th:text="${new java.text.DecimalFormat('+#,##0.00;-#,##0.00').format(transaction.amount)}"></td>
+                            <td th:text="${#temporals.format(transaction.createdAt,'dd-MM-yyyy HH:mm')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade border container "
+                     id="feedback">
+                    <div class="row mt-3">
+                        <div class="col-sm-4 justify-content-center align-self-center">
+                            <h6 class="mb-0">Average Rating</h6>
+                        </div>
+                        <div class="col-sm-8">
+                            <fieldset class="rating">
+                                <input disabled id="averageStar5" name="averageRating" th:checked="${averageRating == 5}"
+                                       type="radio" value="5"/>
+                                <label class="full" for="averageStar5" title="Excellent - 5 stars"></label>
+                                <input disabled id="averageStar4" name="averageRating" th:checked="${averageRating == 4}"
+                                       type="radio" value="4"/>
+                                <label class="full" for="averageStar4" title="Great - 4 stars"></label>
+                                <input disabled id="averageStar3" name="averageRating" th:checked="${averageRating == 3}"
+                                       type="radio" value="3"/>
+                                <label class="full" for="averageStar3" title="OK - 3 stars"></label>
+                                <input disabled id="averageStar2" name="averageRating" th:checked="${averageRating == 2}"
+                                       type="radio" value="2"/>
+                                <label class="full" for="averageStar2" title="Bad - 2 stars"></label>
+                                <input disabled id="averageStar1" name="averageRating" th:checked="${averageRating == 1}"
+                                       type="radio" value="1"/>
+                                <label class="full" for="averageStar1" title="Terrible - 1 star"></label>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>Feedback</th>
+                            <th>Specialist</th>
+                            <th>Service Order</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="feedback: ${feedbacks}">
+                            <td>
+                                <div class="form-row">
+                                    <fieldset class="rating">
+                                        <input disabled id="star5" th:checked="${feedback.rating == 5}"
+                                               type="radio" value="5"/>
+                                        <label class="full" for="star5" title="Excellent - 5 stars"></label>
+                                        <input disabled id="star4" th:checked="${feedback.rating == 4}"
+                                               type="radio" value="4"/>
+                                        <label class="full" for="star4" title="Great - 4 stars"></label>
+                                        <input disabled id="star3" th:checked="${feedback.rating == 3}"
+                                               type="radio" value="3"/>
+                                        <label class="full" for="star3" title="OK - 3 stars"></label>
+                                        <input disabled id="star2" th:checked="${feedback.rating == 2}"
+                                               type="radio" value="2"/>
+                                        <label class="full" for="star2" title="Bad - 2 stars"></label>
+                                        <input disabled id="star1" th:checked="${feedback.rating == 1}"
+                                               type="radio" value="1"/>
+                                        <label class="full" for="star1" title="Terrible - 1 star"></label>
+                                    </fieldset>
+                                </div>
+                                <div th:text="${feedback.text}"></div>
+                            </td>
+                            <td>
+                                <a th:href="@{/specialist/public/profile/{id}(id=${feedback.serviceOrder.specialist.id})}"
+                                   th:text="${feedback.serviceOrder.specialist.fullName}"></a>
+                            </td>
+                            <td>
+                                <a th:href="@{/service-order/customer/details/{id}(id=${feedback.serviceOrder.id})}"
+                                   th:text="${feedback.serviceOrder.title}"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    $('#topUpForm').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/account-transaction/user/top-up',  // action attribute of form
+            data: jQuery.param({userId: $("#userId").val(), amount: $("#amount").val()}),
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let htmlRow = "<tr><td>" + numeral(response.amount).format('+0,0.00') + "</td>";
+                htmlRow = htmlRow + "<td>" + $.format.date(response.createdAt, "dd-MM-yyyy HH:mm") + "</td></tr>";
+                $('#transactions-table').append(htmlRow);
+                $('#balance').text(numeral(response.balance).format('0,0.00'));
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    })
+</script>
+</body>
+</html>

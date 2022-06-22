@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Specialist Profile')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-7">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col">
+                    <h1>Specialist Profile</h1>
+                </div>
+                <div class="col-3 pt-2">
+                    <a class="form-control btn btn-primary"
+                       th:href="@{/specialist/edit/{id}(id=${specialist.id})}">Edit</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${specialist.fullName}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Email</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${specialist.email}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Phone Number</h6>
+                </div>
+                <div class="col-sm-8 text-secondary" th:text="${specialist.phoneNumber}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Balance</h6>
+                </div>
+                <div class="col-sm-8 text-secondary"
+                     id="balance" th:text="${new java.text.DecimalFormat('#,##0.00').format(balance)}"></div>
+            </div>
+            <hr>
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab"
+                       href="#account">Account Details</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       data-toggle="tab"
+                       href="#workCategory">Work Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       data-toggle="tab"
+                       href="#feedback">Feedback</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade border container active show"
+                     id="account">
+                    <form class="form-row mt-3" id="topUpForm" method="post"
+                          th:action="@{/account-transaction/user/top-up}">
+                        <input id="userId" name="userId" th:value="${specialist.id}" type="hidden"/>
+                        <div class="col-sm-8">
+                            <input class="form-control" id="amount" min="1" name="amount" step="any" type="number"
+                                   value="1"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="form-control btn btn-success" type="submit">Top Up</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <table class="table table-bordered table-striped" id="transactions-table">
+                        <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="transaction: ${transactionList}">
+                            <td th:text="${new java.text.DecimalFormat('+#,##0.00;-#,##0.00').format(transaction.amount)}"></td>
+                            <td th:text="${#temporals.format(transaction.createdAt,'dd-MM-yyyy HH:mm')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade border container"
+                     id="workCategory">
+                    <form class="mt-3" id="addWorkCategoryForm" method="post"
+                          th:action="@{/specialist/work-category/add}">
+                        <input id="addSpecialistId" name="specialistId" th:value="${specialist.id}" type="hidden"/>
+                        <fieldset class="form-group">
+                            <h6>Work Category Name</h6>
+                            <div class="form-row">
+                                <div class="col-sm-8">
+                                    <select class="form-control selectpicker" data-live-search="true"
+                                            id="addWorkCategoryId" name="workCategoryId">
+                                        <option th:each="workCategory: ${allWorkCategories}"
+                                                th:text="${workCategory.name}" th:value="${workCategory.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button class="form-control btn btn-success" type="submit">Add</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <hr>
+                    <table class="table table-bordered table-striped" id="workCategoriesTable">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="workCategory: ${specialistWorkCategories}">
+                            <td th:text="${workCategory.name}"></td>
+                            <td class="form-group">
+                                <form class="removeWorkCategoryForm" method="post"
+                                      th:action="@{/specialist/work-category/remove}">
+                                    <input name="specialistId" th:value="${specialist.id}" type="hidden"/>
+                                    <input name="workCategoryId" th:value="${workCategory.id}" type="hidden"/>
+                                    <button class="form-control btn btn-danger" type="submit">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade border container "
+                     id="feedback">
+                    <div class="row mt-3">
+                        <div class="col-sm-4 justify-content-center align-self-center">
+                            <h6 class="mb-0">Average Rating</h6>
+                        </div>
+                        <div class="col-sm-8">
+                            <fieldset class="rating">
+                                <input disabled id="averageStar5" name="averageRating" th:checked="${averageRating == 5}"
+                                       type="radio" value="5"/>
+                                <label class="full" for="averageStar5" title="Excellent - 5 stars"></label>
+                                <input disabled id="averageStar4" name="averageRating" th:checked="${averageRating == 4}"
+                                       type="radio" value="4"/>
+                                <label class="full" for="averageStar4" title="Great - 4 stars"></label>
+                                <input disabled id="averageStar3" name="averageRating" th:checked="${averageRating == 3}"
+                                       type="radio" value="3"/>
+                                <label class="full" for="averageStar3" title="OK - 3 stars"></label>
+                                <input disabled id="averageStar2" name="averageRating" th:checked="${averageRating == 2}"
+                                       type="radio" value="2"/>
+                                <label class="full" for="averageStar2" title="Bad - 2 stars"></label>
+                                <input disabled id="averageStar1" name="averageRating" th:checked="${averageRating == 1}"
+                                       type="radio" value="1"/>
+                                <label class="full" for="averageStar1" title="Terrible - 1 star"></label>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <hr>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>Feedback</th>
+                            <th>Customer</th>
+                            <th>Service Order</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="feedback: ${feedbacks}">
+                            <td>
+                                <div class="form-row">
+                                    <fieldset class="rating">
+                                        <input disabled id="star5" th:checked="${feedback.rating == 5}"
+                                               type="radio" value="5"/>
+                                        <label class="full" for="star5" title="Excellent - 5 stars"></label>
+                                        <input disabled id="star4" th:checked="${feedback.rating == 4}"
+                                               type="radio" value="4"/>
+                                        <label class="full" for="star4" title="Great - 4 stars"></label>
+                                        <input disabled id="star3" th:checked="${feedback.rating == 3}"
+                                               type="radio" value="3"/>
+                                        <label class="full" for="star3" title="OK - 3 stars"></label>
+                                        <input disabled id="star2" th:checked="${feedback.rating == 2}"
+                                               type="radio" value="2"/>
+                                        <label class="full" for="star2" title="Bad - 2 stars"></label>
+                                        <input disabled id="star1" th:checked="${feedback.rating == 1}"
+                                               type="radio" value="1"/>
+                                        <label class="full" for="star1" title="Terrible - 1 star"></label>
+                                    </fieldset>
+                                </div>
+                                <div th:text="${feedback.text}"></div>
+                            </td>
+                            <td>
+                                <a th:href="@{/customer/public/profile/{id}(id=${feedback.serviceOrder.customer.id})}"
+                                   th:text="${feedback.serviceOrder.customer.fullName}"></a>
+                            </td>
+                            <td>
+                                <a th:href="@{/service-order/specialist/details/{id}(id=${feedback.serviceOrder.id})}"
+                                   th:text="${feedback.serviceOrder.title}"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+
+    $('#topUpForm').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/account-transaction/user/top-up',  // action attribute of form
+            data: jQuery.param({userId: $("#userId").val(), amount: $("#amount").val()}),
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let htmlRow = "<tr><td>" + numeral(response.amount).format('+0,0.00') + "</td><td>" + $.format.date(response.createdAt, "dd-MM-yyyy HH:mm") + "</td></tr>";
+                $('#transactions-table').append(htmlRow);
+                $('#balance').text(numeral(response.balance).format('0,0.00'));
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    })
+
+    $('#addWorkCategoryForm').submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/specialist/work-category/add',  // action attribute of form
+            data: jQuery.param({
+                specialistId: $("#addSpecialistId").val(),
+                workCategoryId: $("#addWorkCategoryId").val()
+            }),
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let htmlRow = "<tr><td>" + response.name + "</td>";
+                htmlRow = htmlRow + "<td class='form-group'><form th:action='/work-category/specialist/remove' method='post'>";
+                htmlRow = htmlRow + "<input type='hidden' name='specialistId' th:value='" + response.specialistId + "'/>";
+                htmlRow = htmlRow + "<input type='hidden' name='workCategoryId' th:value='" + response.id + "'/>";
+                htmlRow = htmlRow + "<button type='submit' class='form-control btn btn-danger'>Remove</button>";
+                htmlRow = htmlRow + "</form></td></tr>";
+                $('#workCategoriesTable').append(htmlRow);
+            },
+            error: function () {
+                if ($('#removeWorkCategoryError').length === 0) {
+                    let errorHtml = "<div class='alert alert-danger alert-dismissible fade show' role='alert' id='removeWorkCategoryError'>";
+                    errorHtml = errorHtml + "An error occurs while adding work category.\nMaybe, Work Category has already added...";
+                    errorHtml = errorHtml + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>";
+                    errorHtml = errorHtml + "<span aria-hidden='true'>&times;</span></button></div>";
+                    $(errorHtml).insertAfter("#addWorkCategoryForm");
+                }
+            }
+        });
+    })
+
+    $('.removeWorkCategoryForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        console.log(dataString);
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/specialist/work-category/remove',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let tableRow = form.parentNode.parentNode;
+                tableRow.parentNode.removeChild(tableRow);
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='List of Feedbacks about Specialists')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-10">
+        <h3 class="text-center">List of Feedbacks about Specialists</h3>
+        <hr>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Feedback</th>
+                <th>Specialist</th>
+                <th>Service Order</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="feedback: ${feedbacks}">
+                <td>
+                    <div class="form-row">
+                        <fieldset class="rating">
+                            <input disabled id="star5" th:checked="${feedback.rating == 5}"
+                                   type="radio" value="5"/>
+                            <label class="full" for="star5" title="Excellent - 5 stars"></label>
+                            <input disabled id="star4" th:checked="${feedback.rating == 4}"
+                                   type="radio" value="4"/>
+                            <label class="full" for="star4" title="Great - 4 stars"></label>
+                            <input disabled id="star3" th:checked="${feedback.rating == 3}"
+                                   type="radio" value="3"/>
+                            <label class="full" for="star3" title="OK - 3 stars"></label>
+                            <input disabled id="star2" th:checked="${feedback.rating == 2}"
+                                   type="radio" value="2"/>
+                            <label class="full" for="star2" title="Bad - 2 stars"></label>
+                            <input disabled id="star1" th:checked="${feedback.rating == 1}"
+                                   type="radio" value="1"/>
+                            <label class="full" for="star1" title="Terrible - 1 star"></label>
+                        </fieldset>
+                    </div>
+                    <div th:text="${feedback.text}"></div>
+                </td>
+                <td>
+                    <a th:href="@{/specialist/public/profile/{id}(id=${feedback.serviceOrder.specialist.id})}"
+                       th:text="${feedback.serviceOrder.specialist.fullName}"></a>
+                </td>
+                <td>
+                    <a th:href="@{/service-order/customer/details/{id}(id=${feedback.serviceOrder.id})}"
+                       th:text="${feedback.serviceOrder.title}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

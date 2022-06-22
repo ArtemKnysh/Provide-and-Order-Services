@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Specialist Service Order')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-8">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col">
+                    <h1>Specialist Service Order</h1>
+                </div>
+            </div>
+            <div id="globalAlert"></div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Title</h6>
+                </div>
+                <div class="col text-secondary form-group mb-0"
+                     th:text="${order.title}">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Description</h6>
+                </div>
+                <div class="col text-secondary form-group mb-0"
+                     th:text="${order.description}">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Cost</h6>
+                </div>
+                <div class="col text-secondary" th:text="${order.cost}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Status</h6>
+                </div>
+                <div class="col text-secondary" id="serviceOrderStatus" th:text="${order.status}"></div>
+                <div class="col" id="completeServiceOrderButton"
+                     th:if="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).IN_WORK}">
+                    <form id="completeServiceOrderForm" method="post" th:action="@{/service-order/specialist/complete}">
+                        <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                        <button class="form-control btn btn-success" type="submit">Service Order Completed</button>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Work Category</h6>
+                </div>
+                <div class="col text-secondary" th:text="${order.workCategory.name}"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-4">
+                    <h6 class="mb-0">Customer</h6>
+                </div>
+                <div class="col">
+                    <a th:href="@{/customer/public/profile/{id}(id=${order.customer.id})}"
+                       th:text="${order.customer.fullName}"></a>
+                </div>
+            </div>
+            <div th:if="${customerFeedback != null}">
+                <hr>
+                <div class="row">
+                    <div class="col-sm-4 justify-content-center align-self-center">
+                        <h6 class="mb-0">Rating From Customer</h6>
+                    </div>
+                    <div class="col-auto pl-2">
+                        <fieldset class="rating">
+                            <input disabled id="customerStar5" th:checked="${customerFeedback != null && customerFeedback.rating == 5}"
+                                   type="radio" value="5"/>
+                            <label class="full" for="customerStar5" title="Excellent - 5 stars"></label>
+                            <input disabled id="customerStar4" th:checked="${customerFeedback != null && customerFeedback.rating == 4}"
+                                   type="radio" value="4"/>
+                            <label class="full" for="customerStar4" title="Great - 4 stars"></label>
+                            <input disabled id="customerStar3" th:checked="${customerFeedback != null && customerFeedback.rating == 3}"
+                                   type="radio" value="3"/>
+                            <label class="full" for="customerStar3" title="OK - 3 stars"></label>
+                            <input disabled id="customerStar2" th:checked="${customerFeedback != null && customerFeedback.rating == 2}"
+                                   type="radio" value="2"/>
+                            <label class="full" for="customerStar2" title="Bad - 2 stars"></label>
+                            <input disabled id="customerStar1" th:checked="${customerFeedback != null && customerFeedback.rating == 1}"
+                                   type="radio" value="1"/>
+                            <label class="full" for="customerStar1" title="Terrible - 1 star"></label>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h6 class="mb-0">Feedback</h6>
+                    </div>
+                    <div class="col text-secondary" th:text="${customerFeedback.text}"></div>
+                </div>
+            </div>
+            <hr>
+            <div id="feedbackAlert"></div>
+            <form id="specialistFeedbackForm" method="post" th:action="@{/feedback/specialist/edit}">
+                <input name="serviceOrderId" th:value="${order.id}" type="hidden"/>
+                <div class="row" id="ratingForm"
+                     th:classappend="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).COMPLETED ? '' : 'd-none'}">
+                    <div class="col-sm-4">
+                        <h6 class="mb-0">Rate work with Customer</h6>
+                    </div>
+                    <div class="col-auto pl-2">
+                        <fieldset class="rating">
+                            <input id="specialistStar5" name="rating" required th:checked="${specialistFeedback != null && specialistFeedback.rating == 5}" type="radio"
+                                   value="5"/>
+                            <label class="full" for="specialistStar5" title="Excellent - 5 stars"></label>
+                            <input id="specialistStar4" name="rating" th:checked="${specialistFeedback != null && specialistFeedback.rating == 4}" type="radio"
+                                   value="4"/>
+                            <label class="full" for="specialistStar4" title="Great - 4 stars"></label>
+                            <input id="specialistStar3" name="rating" th:checked="${specialistFeedback != null && specialistFeedback.rating == 3}" type="radio"
+                                   value="3"/>
+                            <label class="full" for="specialistStar3" title="OK - 3 stars"></label>
+                            <input id="specialistStar2" name="rating" th:checked="${specialistFeedback != null && specialistFeedback.rating == 2}" type="radio"
+                                   value="2"/>
+                            <label class="full" for="specialistStar2" title="Bad - 2 stars"></label>
+                            <input id="specialistStar1" name="rating" th:checked="${specialistFeedback != null && specialistFeedback.rating == 1}" type="radio"
+                                   value="1"/>
+                            <label class="full" for="specialistStar1" title="Terrible - 1 star"></label>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="row mt-3" id="feedbackForm"
+                     th:classappend="${order.status == T(com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus).COMPLETED ? '' : 'd-none'}">
+                    <div class="col-sm-2">
+                        <h6 class="mb-0">Feedback</h6>
+                    </div>
+                    <div class="col-sm-10 text-secondary form-group mb-2">
+                        <textarea class="form-control mb-2" name="text" required rows="4"
+                                  th:text="${specialistFeedback != null ? specialistFeedback.text : ''}"
+                        ></textarea>
+                        <button class="form-control btn btn-success" type="submit">Save Feedback</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function getAlert(type, successMessage) {
+        return "<div class='alert alert-" + type + " alert-dismissible fade show' role='alert'>" + successMessage +
+            "<button aria-label='Close' class='close' data-dismiss='alert' type='button'>" +
+            "<span aria-hidden='true'>&times;</span></button></div>";
+    }
+
+    $('#completeServiceOrderForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/specialist/complete',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                $('#serviceOrderStatus').text(response.body);
+                $('#completeServiceOrderButton').addClass("d-none");
+                $('#globalAlert').append(getAlert("success", response.message));
+            },
+            error: function () {
+                $('#globalAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+    $('#specialistFeedbackForm').submit(function (e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/feedback/specialist/edit',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                $('#feedbackAlert').append(getAlert("success", response.message));
+            },
+            error: function () {
+                $('#feedbackAlert').append(getAlert("danger", "Some error occurs while processing request..."));
+            }
+        });
+    })
+</script>
+</body>
+</html>

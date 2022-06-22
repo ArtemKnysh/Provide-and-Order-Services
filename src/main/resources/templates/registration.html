@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Registration')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-5" sec:authorize="!isAuthenticated()">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1>Registration</h1>
+            <p>Please fill out the following fields:</p>
+            <form method="post" th:action="@{/registration}" th:object="${userForm}">
+                <div class="alert alert-warning m-0" th:errors="*{#fields.errors('global')}"
+                     th:if="${#fields.hasGlobalErrors}"></div>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('firstName')}? 'has-error':''">
+                    <label for="registration-firstName">First Name</label>
+                    <input class="form-control" id="registration-firstName" name="firstName"
+                           required="required" th:field="*{firstName}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{firstName}"
+                         th:if="${#fields.hasErrors('firstName')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('lastName')}? 'has-error':''">
+                    <label for="registration-lastName">Last Name</label>
+                    <input class="form-control" id="registration-lastName" name="lastName"
+                           required="required" th:field="*{lastName}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{lastName}"
+                         th:if="${#fields.hasErrors('lastName')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('email')}? 'has-error':''">
+                    <label for="registration-email">Email</label>
+                    <input class="form-control" id="registration-email" name="email"
+                           required="required" th:field="*{email}" type="email">
+                    <div class="alert alert-warning m-0" th:errors="*{email}"
+                         th:if="${#fields.hasErrors('email')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error':''">
+                    <label for="registration-phoneNumber">Phone Number</label>
+                    <input class="form-control" id="registration-phoneNumber" name="phoneNumber"
+                           th:field="*{phoneNumber}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{phoneNumber}"
+                         th:if="${#fields.hasErrors('phoneNumber')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('role')}? 'has-error':''">
+                    <label for="registration-role">User Role</label>
+                    <select class="form-control mb-2" id="registration-role" name="role" th:field="*{role}">
+                        <option value="ROLE_CUSTOMER">Customer</option>
+                        <option value="ROLE_SPECIALIST">SPECIALIST</option>
+                    </select>
+                    <div class="alert alert-warning m-0" th:errors="*{role}"
+                         th:if="${#fields.hasErrors('role')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('password')}? 'has-error':''">
+                    <label for="registration-password">Password</label>
+                    <input class="form-control" id="registration-password" name="password"
+                           required="required" th:field="*{password}" type="password">
+                    <div class="alert alert-warning m-0" th:errors="*{password}"
+                         th:if="${#fields.hasErrors('password')}"></div>
+                </fieldset>
+                <div class="container">
+                    <div class="row">
+                        <button class="btn btn-success col" type="submit">Register</button>
+                        <span class="col">Already registered? <a th:href="@{/login}">You can 'Login' here...</a></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container" sec:authorize="isAuthenticated()">
+    <div class="jumbotron alert-success">
+        <h1>You already have registered...</h1>
+        <h2>To register new profile, click 'Logout' and do the Registration again.</h2>
+    </div>
+</div>
+</body>
+</html>

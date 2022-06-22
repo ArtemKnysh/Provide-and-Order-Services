@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Find Specialist')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-11">
+        <h1 class="text-center">Find Specialist</h1>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-auto">
+                <h1>Specialist Service Orders</h1>
+            </div>
+            <div class="col pt-2">
+                <select class="form-control form-control-lg mb-2" id="orderSelect">
+                    <option th:each="order: ${orders}" th:selected="${order.id == selectedOrder.id}"
+                            th:text="${order.title}" th:value="${order.id}"></option>
+                </select>
+            </div>
+        </div>
+        <hr>
+        <div> <!--th:if="${!#lists.isEmpty(specialistsAcceptedOffer)}"-->
+            <h5>Specialists, that accepted offer:</h5>
+            <!--TODO  Спеціалісти, які не прийняли пропозицію виконати замовлення:  -->
+            <hr>
+            <div class="card-columns" id="specialistsAcceptedOfferCards">
+                <div class="card" th:each="specialist: ${specialistsAcceptedOffer}">
+                    <a class="list-group-item list-group-item-action list-group-item-secondary"
+                       th:href="@{/specialist/public/profile/{id}(id=${specialist.id})}"
+                       th:text="${specialist.fullName}"></a>
+                    <div class="card-body">
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.phoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone Number</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.phoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.email)}">
+                            <div class="col-auto">
+                                <h5>Email</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.email}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto justify-content-center align-self-center">
+                                <h5>Rating</h5>
+                            </div>
+                            <div class="col d-flex">
+                                <fieldset class="rating ml-auto">
+                                    <input disabled th:checked="${specialist.averageRating == 5}"
+                                           type="radio" value="5"/>
+                                    <label class="full" title="Excellent - 5 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 4}"
+                                           type="radio" value="4"/>
+                                    <label class="full" title="Great - 4 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 3}"
+                                           type="radio" value="3"/>
+                                    <label class="full" title="OK - 3 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 2}"
+                                           type="radio" value="2"/>
+                                    <label class="full" title="Bad - 2 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 1}"
+                                           type="radio" value="1"/>
+                                    <label class="full" title="Terrible - 1 star"></label>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <form class="setSpecialistForm" method="post"
+                              th:action="@{/service-order/customer/specialist/set}">
+                            <input name="specialistId" th:value="${specialist.id}" type="hidden"/>
+                            <input name="serviceOrderId" th:value="${selectedOrder.id}" type="hidden"/>
+                            <button class="form-control btn btn-success" type="submit"
+                            >Set Service Order
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-1">
+        </div>
+        <div> <!--th:if="${!#lists.isEmpty(specialistsNotAcceptedOffer)}"-->
+            <h5>Specialists, that not accepted offer:</h5>
+            <hr>
+            <div class="card-columns" id="specialistsNotAcceptedOfferCards">
+                <div class="card" th:each="specialist: ${specialistsNotAcceptedOffer}">
+                    <a class="list-group-item list-group-item-action list-group-item-secondary"
+                       th:href="@{/specialist/public/profile/{id}(id=${specialist.id})}"
+                       th:text="${specialist.fullName}"></a>
+                    <div class="card-body">
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.phoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone Number</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.phoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.email)}">
+                            <div class="col-auto">
+                                <h5>Email</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.email}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto justify-content-center align-self-center">
+                                <h5>Rating</h5>
+                            </div>
+                            <div class="col d-flex">
+                                <fieldset class="rating ml-auto">
+                                    <input disabled th:checked="${specialist.averageRating == 5}"
+                                           type="radio" value="5"/>
+                                    <label class="full" title="Excellent - 5 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 4}"
+                                           type="radio" value="4"/>
+                                    <label class="full" title="Great - 4 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 3}"
+                                           type="radio" value="3"/>
+                                    <label class="full" title="OK - 3 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 2}"
+                                           type="radio" value="2"/>
+                                    <label class="full" title="Bad - 2 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 1}"
+                                           type="radio" value="1"/>
+                                    <label class="full" title="Terrible - 1 star"></label>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <form class="removeOfferForm" method="post"
+                              th:action="@{/service-order/customer/specialist/offer/remove}">
+                            <input name="specialistId" th:value="${specialist.id}" type="hidden"/>
+                            <input name="serviceOrderId" th:value="${selectedOrder.id}" type="hidden"/>
+                            <button class="form-control btn btn-success" type="submit"
+                            >Remove Offer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-1">
+        </div>
+        <div> <!--th:if="${!#lists.isEmpty(specialistsWithOutOffer)}"-->
+            <h5>Specialists without offer:</h5>
+            <hr>
+            <div class="card-columns" id="specialistsWithOutOfferCards">
+                <div class="card" th:each="specialist: ${specialistsWithOutOffer}">
+                    <a class="list-group-item list-group-item-action list-group-item-secondary"
+                       th:href="@{/specialist/public/profile/{id}(id=${specialist.id})}"
+                       th:text="${specialist.fullName}"></a>
+                    <div class="card-body">
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.phoneNumber)}">
+                            <div class="col-auto">
+                                <h5>Phone Number</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.phoneNumber}"></p>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!#strings.isEmpty(specialist.email)}">
+                            <div class="col-auto">
+                                <h5>Email</h5>
+                            </div>
+                            <div class="col">
+                                <p class="card-text text-right" th:text="${specialist.email}"></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto justify-content-center align-self-center">
+                                <h5>Rating</h5>
+                            </div>
+                            <div class="col d-flex">
+                                <fieldset class="rating ml-auto">
+                                    <input disabled th:checked="${specialist.averageRating == 5}"
+                                           type="radio" value="5"/>
+                                    <label class="full" title="Excellent - 5 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 4}"
+                                           type="radio" value="4"/>
+                                    <label class="full" title="Great - 4 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 3}"
+                                           type="radio" value="3"/>
+                                    <label class="full" title="OK - 3 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 2}"
+                                           type="radio" value="2"/>
+                                    <label class="full" title="Bad - 2 stars"></label>
+                                    <input disabled th:checked="${specialist.averageRating == 1}"
+                                           type="radio" value="1"/>
+                                    <label class="full" title="Terrible - 1 star"></label>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <form class="addOfferForm" method="post"
+                              th:action="@{/service-order/customer/specialist/offer}">
+                            <input name="specialistId" th:value="${specialist.id}" type="hidden"/>
+                            <input name="serviceOrderId" th:value="${selectedOrder.id}" type="hidden"/>
+                            <button class="form-control btn btn-success" type="submit"
+                            >Send Offer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#orderSelect').change(function () {
+        window.location.href = "/service-order/customer/find-specialist/" + $("#orderSelect").val(); //relative to domain
+    })
+
+    $(document).on('submit', '.removeOfferForm', removeOfferFormSubmit)
+    $(document).on('submit', '.addOfferForm', addOfferFormSubmit)
+
+    function getCard(response, formAction, formClass, buttonMsg) {
+        let newCard = "<div class='card'>";
+        newCard = newCard + "<a class='list-group-item list-group-item-action list-group-item-secondary' ";
+        newCard = newCard + "href='/specialist/public/profile/" + response.id + "'>" + response.fullName + "</a>";
+        newCard = newCard + "<div class='card-body'>";
+        if (response.phoneNumber !== null && response.phoneNumber.trim() !== "") {
+            newCard = newCard + "<div class='row'><div class='col-auto'>";
+            newCard = newCard + "<h5>Phone Number</h5></div><div class='col'>";
+            newCard = newCard + "<p class='card-text text-right'>" + response.phoneNumber + "</p></div></div>";
+        }
+        if (response.email !== null && response.email.trim() !== "") {
+            newCard = newCard + "<div class='row'><div class='col-auto'>";
+            newCard = newCard + "<h5>Email</h5></div><div class='col'>";
+            newCard = newCard + "<p class='card-text text-right'>" + response.email + "</p></div></div>";
+        }
+        newCard = newCard + "<div class='row'><div class='col-auto justify-content-center align-self-center'><h5>Rating</h5></div>";
+        newCard = newCard + "<div class='col d-flex'><fieldset class='rating ml-auto'>";
+        if (response.averageRating === 5) {
+            newCard = newCard + "<input type='radio' value='5' checked disabled/>";
+        } else {
+            newCard = newCard + "<input type='radio' value='5' disabled/>";
+        }
+        newCard = newCard + "<label class='full' title='Excellent - 5 stars'></label>";
+        if (response.averageRating === 4) {
+            newCard = newCard + "<input type='radio' value='4' checked disabled/>";
+        } else {
+            newCard = newCard + "<input type='radio' value='4' disabled/>";
+        }
+        newCard = newCard + "<label class='full' title='Great - 4 stars'></label>";
+        if (response.averageRating === 3) {
+            newCard = newCard + "<input type='radio' value='3' checked disabled/>";
+        } else {
+            newCard = newCard + "<input type='radio' value='3' disabled/>";
+        }
+        newCard = newCard + "<label class='full' title='OK - 3 stars'></label>";
+        if (response.averageRating === 2) {
+            newCard = newCard + "<input type='radio' value='2' checked disabled/>";
+        } else {
+            newCard = newCard + "<input type='radio' value='2' disabled/>";
+        }
+        newCard = newCard + "<label class='full' title='Bad - 2 stars'></label>";
+        if (response.averageRating === 1) {
+            newCard = newCard + "<input type='radio' value='1' checked disabled/>";
+        } else {
+            newCard = newCard + "<input type='radio' value='1' disabled/>";
+        }
+        newCard = newCard + "<label class='full' title='Terrible - 1 star'></label></fieldset></div></div>";
+        newCard = newCard + "<form action='" + formAction + "' method='post' class='" + formClass + "' >";
+        newCard = newCard + "<input type='hidden' name='specialistId' value='" + response.id + "'/>";
+        newCard = newCard + "<input type='hidden' name='serviceOrderId' value='" + $("#orderSelect").val() + "'/>";
+        newCard = newCard + "<button type='submit' class='form-control btn btn-success'>" + buttonMsg;
+        newCard = newCard + "</button></form></div></div>";
+        return newCard;
+    }
+
+    function removeOfferFormSubmit(e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/customer/specialist/offer/remove',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let card = form.parentNode.parentNode;
+                $(card).remove();
+                let newCard = getCard(response, "/service-order/customer/specialist/offer", "addOfferForm",
+                    "Send Offer");
+                $('#specialistsWithOutOfferCards').append(newCard);
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    }
+
+    function addOfferFormSubmit(e) {
+        e.preventDefault();
+        let form = this;
+        let dataString = $(form).serialize();
+        $.ajax({
+            type: 'POST', // method attribute of form
+            url: '/service-order/customer/specialist/offer',  // action attribute of form
+            data: dataString,
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (response) {
+                let card = form.parentNode.parentNode;
+                $(card).remove();
+                let newCard = getCard(response, "/service-order/customer/specialist/offer/remove", "removeOfferForm",
+                    "Remove Offer");
+                $('#specialistsNotAcceptedOfferCards').append(newCard);
+            },
+            error: function () {
+                alert("error");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

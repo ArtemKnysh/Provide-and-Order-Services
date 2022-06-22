@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Login')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-5" sec:authorize="!isAuthenticated()">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1>Login</h1>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert"
+                 th:if="${action != null and action == 'error'}">
+                Wrong email or password.
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"
+                 th:if="${action != null and action == 'registration-success'}">
+                Profile was successfully registered!
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <p>Please fill out the following fields:</p>
+            <form method="post" th:action="@{/login}">
+                <fieldset class="form-group">
+                    <label for="login-email">Email</label>
+                    <input class="form-control" id="login-email" name="email"
+                           required="required" type="email">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="login-password">Password</label>
+                    <input class="form-control" id="login-password" name="password"
+                           required="required" type="password">
+                </fieldset>
+                <button class="btn btn-success" type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container" sec:authorize="isAuthenticated()">
+    <div class="jumbotron alert-success">
+        <h1>You already have logged in...</h1>
+        <h2>To login to another profile, click 'Logout' and do the Login again.</h2>
+    </div>
+</div>
+</body>
+</html>

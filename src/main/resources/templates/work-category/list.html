@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Work Categories')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="row">
+    <div class="container col-md-10">
+        <h3 class="text-center"> Work Categories </h3>
+        <hr>
+        <div class="card-columns">
+            <div class="card" th:each="parentCategory: ${parentCategories}">
+                <a class="list-group-item list-group-item-action list-group-item-secondary"
+                   th:href="@{/specialist/list/work-category/{id}(id=${parentCategory.id})}"
+                   th:utext="${parentCategory.icon}+' '+${parentCategory.name}"></a>
+                <a class="list-group-item list-group-item-action"
+                   th:each="subCategory: ${parentCategory.subWorkCategories}"
+                   th:href="@{/specialist/list/work-category/{id}(id=${subCategory.id})}"
+                   th:text="${subCategory.name}"></a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

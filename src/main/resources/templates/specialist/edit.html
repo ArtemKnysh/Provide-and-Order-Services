@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/common :: head(title='Edit Specialist Data')"></head>
+<body>
+<div th:insert="layout/common :: navbar"></div>
+<div class="container col-md-7">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h1>Edit Specialist Data</h1>
+            <div class="alert alert-success alert-dismissible fade show" role="alert"
+                 th:if="${action != null}">
+                <span th:if="${action == 'edit-success'}">Changes were successfully saved!</span>
+                <button aria-label="Close" class="close" data-dismiss="alert" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" th:action="@{/specialist/edit}" th:object="${specialist}">
+                <div class="alert alert-warning m-0" th:errors="*{#fields.errors('global')}"
+                     th:if="${#fields.hasGlobalErrors}"></div>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('firstName')}? 'has-error':''">
+                    <label for="registration-firstName">First Name</label>
+                    <input class="form-control" id="registration-firstName" name="firstName"
+                           required="required" th:value="${specialist.firstName}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{firstName}"
+                         th:if="${#fields.hasErrors('firstName')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('lastName')}? 'has-error':''">
+                    <label for="registration-lastName">Last Name</label>
+                    <input class="form-control" id="registration-lastName" name="lastName"
+                           required="required" th:value="${specialist.lastName}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{lastName}"
+                         th:if="${#fields.hasErrors('lastName')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error':''">
+                    <label for="registration-phoneNumber">Phone Number</label>
+                    <input class="form-control" id="registration-phoneNumber" name="phoneNumber"
+                           th:value="${phoneNumber}" type="text">
+                    <div class="alert alert-warning m-0" th:errors="*{phoneNumber}"
+                         th:if="${#fields.hasErrors('phoneNumber')}"></div>
+                </fieldset>
+                <fieldset class="form-group" th:classappend="${#fields.hasErrors('email')}? 'has-error':''">
+                    <label for="registration-email">Email</label>
+                    <input class="form-control" id="registration-email" name="email"
+                           required="required" th:value="${specialist.email}" type="email">
+                    <div class="alert alert-warning m-0" th:errors="*{email}"
+                         th:if="${#fields.hasErrors('email')}"></div>
+                </fieldset>
+                <input name="id" th:value="${specialist.id}" type="hidden"/>
+                <button class="btn btn-success" type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
