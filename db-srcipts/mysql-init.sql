@@ -29,7 +29,7 @@ CREATE TABLE `user`
     `phone_number` varchar(15)           DEFAULT NULL,
     `password`     varchar(255) NOT NULL,
     `create_time`  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `role_id`      int          NOT NULL DEFAULT '1',
+    `role_id`      int          NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`),
     UNIQUE KEY `email_UNIQUE` (`email`),
@@ -53,26 +53,6 @@ CREATE TABLE `account_transaction`
 ) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb3;
 
 -- -----------------------------------------------------
--- Create Table feedback
--- -----------------------------------------------------
-CREATE TABLE `feedback`
-(
-    `id`               bigint       NOT NULL AUTO_INCREMENT,
-    `text`             varchar(512) NOT NULL,
-    `hidden`           tinyint(1) NOT NULL DEFAULT '0',
-    `rating`           int          NOT NULL,
-    `user_id`          bigint       NOT NULL,
-    `service_order_id` bigint       NOT NULL,
-    `create_time`      timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `id_UNIQUE` (`id`),
-    KEY                `fk_feedback_customer_idx` (`user_id`),
-    KEY                `fk_feedback_service_order_idx` (`service_order_id`),
-    CONSTRAINT `fk_feedback_service_order` FOREIGN KEY (`service_order_id`) REFERENCES `service_order` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_feedback_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
-
--- -----------------------------------------------------
 -- Create Table service_order_status
 -- -----------------------------------------------------
 CREATE TABLE `service_order_status`
@@ -82,49 +62,6 @@ CREATE TABLE `service_order_status`
     PRIMARY KEY (`id`),
     UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
-
--- -----------------------------------------------------
--- Create Table service_order
--- -----------------------------------------------------
-CREATE TABLE `service_order`
-(
-    `id`               bigint    NOT NULL AUTO_INCREMENT,
-    `title`            varchar(128)       DEFAULT NULL,
-    `description`      varchar(512)       DEFAULT NULL,
-    `create_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `cost`             double             DEFAULT '0',
-    `customer_id`      bigint    NOT NULL,
-    `specialist_id`    bigint             DEFAULT NULL,
-    `work_category_id` bigint    NOT NULL,
-    `status_id`        int       NOT NULL DEFAULT '1',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `id_UNIQUE` (`id`),
-    KEY                `fk_service_order_specialist_idx` (`specialist_id`),
-    KEY                `fk_service_order_status_idx` (`status_id`),
-    KEY                `fk_service_order_customer_idx` (`customer_id`),
-    KEY                `fk_service_order_work_category_idx` (`work_category_id`),
-    CONSTRAINT `fk_service_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_service_order_specialist` FOREIGN KEY (`specialist_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_service_order_status` FOREIGN KEY (`status_id`) REFERENCES `service_order_status` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_service_order_work_category` FOREIGN KEY (`work_category_id`) REFERENCES `work_category` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3;
-
--- -----------------------------------------------------
--- Create Table offer_service_order
--- -----------------------------------------------------
-CREATE TABLE `offer_service_order`
-(
-    `id`                bigint NOT NULL AUTO_INCREMENT,
-    `service_order_id`  bigint NOT NULL,
-    `specialist_id`     bigint NOT NULL,
-    `specialist_answer` tinyint(1) DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `id_UNIQUE` (`id`),
-    KEY                 `ser_idx` (`service_order_id`),
-    KEY                 `fk_offer_service_order_service_specialist_idx` (`specialist_id`),
-    CONSTRAINT `fk_offer_service_order_service_order` FOREIGN KEY (`service_order_id`) REFERENCES `service_order` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-    CONSTRAINT `fk_offer_service_order_service_specialist` FOREIGN KEY (`specialist_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 -- -----------------------------------------------------
 -- Create Table work_category
@@ -153,6 +90,69 @@ CREATE TABLE `specialist_work_categories`
     CONSTRAINT `fk_specialist_work_categories_specialist` FOREIGN KEY (`specialist_id`) REFERENCES `user` (`id`),
     CONSTRAINT `fk_specialist_work_categories_work_category` FOREIGN KEY (`work_category_id`) REFERENCES `work_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+
+-- -----------------------------------------------------
+-- Create Table service_order
+-- -----------------------------------------------------
+CREATE TABLE `service_order`
+(
+    `id`               bigint    NOT NULL AUTO_INCREMENT,
+    `title`            varchar(128)       DEFAULT NULL,
+    `description`      varchar(512)       DEFAULT NULL,
+    `create_time`      timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `cost`             double             DEFAULT '0',
+    `customer_id`      bigint    NOT NULL,
+    `specialist_id`    bigint             DEFAULT NULL,
+    `work_category_id` bigint    NOT NULL,
+    `status_id`        int       NOT NULL DEFAULT '1',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`),
+    KEY                `fk_service_order_specialist_idx` (`specialist_id`),
+    KEY                `fk_service_order_status_idx` (`status_id`),
+    KEY                `fk_service_order_customer_idx` (`customer_id`),
+    KEY                `fk_service_order_work_category_idx` (`work_category_id`),
+    CONSTRAINT `fk_service_order_customer` FOREIGN KEY (`customer_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_service_order_specialist` FOREIGN KEY (`specialist_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_service_order_status` FOREIGN KEY (`status_id`) REFERENCES `service_order_status` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_service_order_work_category` FOREIGN KEY (`work_category_id`) REFERENCES `work_category` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb3;
+
+-- -----------------------------------------------------
+-- Create Table feedback
+-- -----------------------------------------------------
+CREATE TABLE `feedback`
+(
+    `id`               bigint       NOT NULL AUTO_INCREMENT,
+    `text`             varchar(512) NOT NULL,
+    `hidden`           tinyint(1) NOT NULL DEFAULT '0',
+    `rating`           int          NOT NULL,
+    `user_id`          bigint       NOT NULL,
+    `service_order_id` bigint       NOT NULL,
+    `create_time`      timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`),
+    KEY                `fk_feedback_customer_idx` (`user_id`),
+    KEY                `fk_feedback_service_order_idx` (`service_order_id`),
+    CONSTRAINT `fk_feedback_service_order` FOREIGN KEY (`service_order_id`) REFERENCES `service_order` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_feedback_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+
+-- -----------------------------------------------------
+-- Create Table offer_service_order
+-- -----------------------------------------------------
+CREATE TABLE `offer_service_order`
+(
+    `id`                bigint NOT NULL AUTO_INCREMENT,
+    `service_order_id`  bigint NOT NULL,
+    `specialist_id`     bigint NOT NULL,
+    `specialist_answer` tinyint(1) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `id_UNIQUE` (`id`),
+    KEY                 `ser_idx` (`service_order_id`),
+    KEY                 `fk_offer_service_order_service_specialist_idx` (`specialist_id`),
+    CONSTRAINT `fk_offer_service_order_service_order` FOREIGN KEY (`service_order_id`) REFERENCES `service_order` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT `fk_offer_service_order_service_specialist` FOREIGN KEY (`specialist_id`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 
 -- -----------------------------------------------------
 -- Populate Table role
