@@ -9,10 +9,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Table(name="work_category", schema = "public")
 public class WorkCategory {
 
     @Id
