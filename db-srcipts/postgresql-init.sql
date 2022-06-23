@@ -1,5 +1,5 @@
 -- -----------------------------------------------------
--- Create Schema provide_and_order_services
+-- Create DATABASE provide_and_order_services
 -- -----------------------------------------------------
 DROP DATABASE IF EXISTS provide_and_order_services;
 CREATE DATABASE provide_and_order_services
@@ -10,6 +10,17 @@ CREATE DATABASE provide_and_order_services
     LC_CTYPE = 'English_United States.1251'
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
+
+-- -----------------------------------------------------
+-- Create SCHEMA public
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS public ;
+CREATE SCHEMA IF NOT EXISTS public
+    AUTHORIZATION postgres;
+COMMENT ON SCHEMA public
+    IS 'standard public schema';
+GRANT ALL ON SCHEMA public TO PUBLIC;
+GRANT ALL ON SCHEMA public TO postgres;
 
 -- -----------------------------------------------------
 -- Create Table role
@@ -26,12 +37,26 @@ ALTER TABLE IF EXISTS public.role
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE user_id_seq;
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.user_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.user_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY "user".id;
+ALTER SEQUENCE public.user_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table user
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public."user";
 CREATE TABLE IF NOT EXISTS public."user"
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('user_id_seq'::regclass),
     first_name character varying(16) COLLATE pg_catalog."default" NOT NULL,
     last_name character varying(16) COLLATE pg_catalog."default" NOT NULL,
     email character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -50,12 +75,26 @@ ALTER TABLE IF EXISTS public."user"
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE account_transaction_id_seq
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.account_transaction_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.account_transaction_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY account_transaction.id;
+ALTER SEQUENCE public.account_transaction_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table account_transaction
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.account_transaction;
 CREATE TABLE IF NOT EXISTS public.account_transaction
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('account_transaction_id_seq'::regclass),
     user_id bigint NOT NULL,
     amount double precision NOT NULL,
     create_time time without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -84,12 +123,26 @@ ALTER TABLE IF EXISTS public.service_order_status
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE work_category_id_seq
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.work_category_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.work_category_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY work_category.id;
+ALTER SEQUENCE public.work_category_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table work_category
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.work_category;
 CREATE TABLE IF NOT EXISTS public.work_category
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('work_category_id_seq'::regclass),
     parent_id bigint,
     name character varying(64) COLLATE pg_catalog."default" NOT NULL,
     icon character varying(64) COLLATE pg_catalog."default",
@@ -122,12 +175,26 @@ ALTER TABLE IF EXISTS public.specialist_work_categories
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE service_order_id_seq
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.service_order_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.service_order_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY service_order.id;
+ALTER SEQUENCE public.service_order_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table service_order
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.service_order;
 CREATE TABLE IF NOT EXISTS public.service_order
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('service_order_id_seq'::regclass),
     title character varying(128) COLLATE pg_catalog."default",
     description character varying(512) COLLATE pg_catalog."default",
     create_time timestamp without time zone NOT NULL,
@@ -159,12 +226,26 @@ ALTER TABLE IF EXISTS public.service_order
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE feedback_id_seq
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.feedback_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.feedback_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY feedback.id;
+ALTER SEQUENCE public.feedback_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table feedback
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.feedback;
 CREATE TABLE IF NOT EXISTS public.feedback
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('feedback_id_seq'::regclass),
     text character varying(512) COLLATE pg_catalog."default" NOT NULL,
     rating integer NOT NULL,
     hidden boolean NOT NULL DEFAULT false,
@@ -186,12 +267,26 @@ ALTER TABLE IF EXISTS public.feedback
     OWNER to postgres;
 
 -- -----------------------------------------------------
+-- Create SEQUENCE offer_service_order_id_seq
+-- -----------------------------------------------------
+DROP SEQUENCE IF EXISTS public.offer_service_order_id_seq;
+CREATE SEQUENCE IF NOT EXISTS public.offer_service_order_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1
+    OWNED BY offer_service_order.id;
+ALTER SEQUENCE public.offer_service_order_id_seq
+    OWNER TO postgres;
+
+-- -----------------------------------------------------
 -- Create Table offer_service_order
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS public.offer_service_order;
 CREATE TABLE IF NOT EXISTS public.offer_service_order
 (
-    id bigint NOT NULL,
+    id bigint NOT NULL DEFAULT nextval('offer_service_order_id_seq'::regclass),
     service_order_id bigint NOT NULL,
     specialist_id bigint NOT NULL,
     specialist_answer boolean,
@@ -220,8 +315,8 @@ VALUES (0, 'ROLE_CUSTOMER'),
 -- -----------------------------------------------------
 -- Populate Table user
 -- -----------------------------------------------------
-INSERT INTO public."user"(id, first_name, last_name, email, password, role_id)
-VALUES (1, 'ADMIN', 'ADMIN', 'admin@mail.com', '$2a$12$ZZzIf3sow0ximoO0yRWvqey2DsVZl1CsZfjozPF0/5y3GgHA/9w2.', 2);
+INSERT INTO public."user"(first_name, last_name, email, password, role_id)
+VALUES ('ADMIN', 'ADMIN', 'admin@mail.com', '$2a$12$ZZzIf3sow0ximoO0yRWvqey2DsVZl1CsZfjozPF0/5y3GgHA/9w2.', 2);
 
 -- -----------------------------------------------------
 -- Populate Table service_order_status
