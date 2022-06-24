@@ -85,21 +85,21 @@ public class ServiceOrderRestController {
     public Response completeBySpecialist(@RequestParam Long serviceOrderId) {
         serviceOrderService.setStatusToServiceOrder(ServiceOrderStatus.WAIT_FOR_CUSTOMER_APPROVE, serviceOrderId);
         return new Response(ServiceOrderStatus.WAIT_FOR_CUSTOMER_APPROVE.toString(),
-                "Виконання замовлення успішно підтверджено! Очікування підтвердження від користувача...");
+                "Service Order completing successfully confirmed! Please wait for approving by customer...");
     }
 
     @PostMapping("/customer/approve")
     public Response approveByCustomer(@RequestParam Long serviceOrderId) {
         serviceOrderService.setStatusToServiceOrder(ServiceOrderStatus.WAIT_FOR_PAYMENT, serviceOrderId);
         return new Response(ServiceOrderStatus.WAIT_FOR_PAYMENT.toString(),
-                "Виконання замовлення успішно підтверджено!");
+                "Service Order completing successfully approved!");
     }
 
     @PostMapping("/customer/extend")
     public Response extendByCustomer(@RequestParam Long serviceOrderId) {
         serviceOrderService.setStatusToServiceOrder(ServiceOrderStatus.IN_WORK, serviceOrderId);
         return new Response(ServiceOrderStatus.IN_WORK.toString(),
-                "Замовлення відправлено на доопрацювання...");
+                "Service Order sent to refinement...");
     }
 
     @PostMapping("/customer/pay")
@@ -108,10 +108,10 @@ public class ServiceOrderRestController {
         try {
             accountTransactionService.payForServiceOrder(specialist.getId(), serviceOrderId);
             return new Response(ServiceOrderStatus.COMPLETED.toString(),
-                    "Оплата за замовлення успішно проведена!");
+                    "Service Order was successfully paid!");
         } catch (LowUserBalanceException ex) {
             return new Response(ServiceOrderStatus.WAIT_FOR_PAYMENT.toString(),
-                    "На балансі недостатньо коштів для здійснення операції", true);
+                    "Not enough money on the account to complete payment...", true);
         }
     }
 

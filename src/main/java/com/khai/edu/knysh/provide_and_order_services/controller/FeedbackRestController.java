@@ -33,7 +33,7 @@ public class FeedbackRestController {
         feedback.setText(text);
         feedback.setRating(rating);
         feedbackService.save(feedback);
-        return new Response(null, "Відгук та оцінку успішно збережено!");
+        return new Response(null, "Feedback and Rating were successfully saved!");
     }
 
     @PostMapping("/specialist/edit")
@@ -44,7 +44,7 @@ public class FeedbackRestController {
         feedback.setText(text);
         feedback.setRating(rating);
         feedbackService.save(feedback);
-        return new Response(null, "Відгук та оцінку успішно збережено!");
+        return new Response(null, "Feedback and Rating were successfully saved!");
     }
 
 }
