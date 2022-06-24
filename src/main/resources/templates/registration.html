@@ -42,7 +42,7 @@
                 <fieldset class="form-group" th:classappend="${#fields.hasErrors('role')}? 'has-error':''">
                     <label for="registration-role">User Role</label>
                     <select class="form-control mb-2" id="registration-role" name="role" th:field="*{role}">
-                        <option value="ROLE_CUSTOMER">Customer</option>
+                        <option value="ROLE_CUSTOMER">CUSTOMER</option>
                         <option value="ROLE_SPECIALIST">SPECIALIST</option>
                     </select>
                     <div class="alert alert-warning m-0" th:errors="*{role}"

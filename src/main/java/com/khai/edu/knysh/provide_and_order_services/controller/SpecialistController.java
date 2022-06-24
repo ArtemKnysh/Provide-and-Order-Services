@@ -1,7 +1,6 @@
 package com.khai.edu.knysh.provide_and_order_services.controller;
 
 import com.khai.edu.knysh.provide_and_order_services.entity.AccountTransaction;
-import com.khai.edu.knysh.provide_and_order_services.entity.ServiceOrderStatus;
 import com.khai.edu.knysh.provide_and_order_services.entity.SpecialistDTO;
 import com.khai.edu.knysh.provide_and_order_services.entity.User;
 import com.khai.edu.knysh.provide_and_order_services.entity.UserDTO;
@@ -91,7 +90,7 @@ public class SpecialistController {
         model.addAttribute("specialist", specialist);
         model.addAttribute("specialistWorkCategories", workCategoryService.findAllBySpecialistId(specialist.getId()));
         model.addAttribute("averageRating", feedbackService.findAverageRatingAboutSpecialist(specialist));
-        model.addAttribute("serviceOrdersCount", serviceOrdersService.countBySpecialistAndStatusIn(specialist, ServiceOrderStatus.CANCELLED.getNextStatuses()));
+        model.addAttribute("serviceOrdersCount", serviceOrdersService.countBySpecialistAndStatusMoreThenPaid(specialist));
         model.addAttribute("feedbacks", feedbackService.findAllAboutSpecialist(specialist));
         if (principal != null) {
             User user = webUtil.findUser(principal, specialistService);

@@ -34,7 +34,7 @@
                 <fieldset class="form-group" th:classappend="${#fields.hasErrors('phoneNumber')}? 'has-error':''">
                     <label for="registration-phoneNumber">Phone Number</label>
                     <input class="form-control" id="registration-phoneNumber" name="phoneNumber"
-                           th:value="${phoneNumber}" type="text">
+                           th:value="${specialist.phoneNumber}" type="text">
                     <div class="alert alert-warning m-0" th:errors="*{phoneNumber}"
                          th:if="${#fields.hasErrors('phoneNumber')}"></div>
                 </fieldset>
