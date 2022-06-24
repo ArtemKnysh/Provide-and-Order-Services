@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS public.service_order
     id bigint NOT NULL DEFAULT nextval('service_order_id_seq'::regclass),
     title character varying(128) COLLATE pg_catalog."default",
     description character varying(512) COLLATE pg_catalog."default",
-    create_time timestamp without time zone NOT NULL,
+    create_time timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     cost double precision,
     customer_id bigint NOT NULL,
     specialist_id bigint,
